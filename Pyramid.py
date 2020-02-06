@@ -26,3 +26,4 @@ while x != groot + 1:
 while x != 0:
     print((groot - x + 1) * ' ' + x * '*')
     x -= 1
+    
