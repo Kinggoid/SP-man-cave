@@ -65,8 +65,9 @@ def algoritme(gamemode):
 
     for i in alles:
         for u in alles:
+            x = str(feedback(u, i))
             for j in lst:
-                if str(feedback(u, i)) == j:
+                if x == j:
                     lst[j] = lst[j] + 1
 
         if gamemode == 'hard':
@@ -183,4 +184,4 @@ while True:
         break
 
     else:
-        print('Dit was niet één van de twee opties, probeer het nog eens.', '\n')
+        print('Dit was niet één van de twee opties, probeer het nog eens.\n')
