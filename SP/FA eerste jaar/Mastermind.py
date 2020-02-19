@@ -65,9 +65,9 @@ def algoritme(gamemode):
 
     for i in alles:
         for u in alles:
-            x = str(feedback(u, i))
+            x = str(feedback(u, i)) # Hier sla ik de feedback op van elk element uit de lijst tegen elk ander element uit de lijst
             for j in lst:
-                if x == j:
+                if x == j: # Hier sla ik de feedback van elke vergelijking op in de dictionary 'lst'
                     lst[j] = lst[j] + 1
 
         if gamemode == 'hard':
@@ -79,25 +79,25 @@ def algoritme(gamemode):
                 n += lst[p]
                 hier += (lst[p] ** 2) / totaal
 
-            if hier < groot[0]:
+            if hier < groot[0]: # Hier zorg ik ervoor dat groot het antwoord met de beste expected size opslaat
                 groot[0] = hier
                 groot[1] = i
 
-            for p in lst:
+            for p in lst: # Reset de dictionary
                 lst[p] = 0
 
         else:
             samen = 0
 
             for p in lst:
-                if int(p[1]) + int(p[4]) >= 3:
+                if int(p[1]) + int(p[4]) >= 3: # Kijkt hoeveel vergelijkingen drie of meer pinnen als feedback zouden krijgen
                     samen += lst[p]
 
-            if samen / 14 > groot[0]:
+            if samen / 14 > groot[0]: # Slaat de code op die de grootste kans heeft om drie of meer pinnen als feedback te krijgen
                 groot[0] = samen / 14
                 groot[1] = i
 
-            for i in lst:
+            for i in lst: # Reset de dictionary
                 lst[i] = 0
     return groot[1]
 
@@ -114,7 +114,7 @@ def comp(gamemode):
         if len(alles) == 0:
             return 'Er is geen gok meer mogelijk, de feedback moet ergens verkeerd zijn gegaan.'
 
-        if gamemode == 'easy':
+        if gamemode == 'easy': # Bepaald welke gok de functie moet nemen
             gok = random.choice(alles)
         else:
             gok = algoritme(gamemode)
@@ -156,15 +156,18 @@ print("Welkom! Leuk dat je Mastermind wilt gaan spelen.")
 
 while True:
     wie = input('Typ "raden" als je wilt raden en "computer" als je wilt dat de computer raadt: ')
-    if wie == 'raden' or wie == 'Raden':
-        for i in range(0, 4):
+    if wie == 'raden' or wie == 'Raden': # Jij speelt
+
+        for i in range(0, 4): # Creërt te raden code
             antwoord.append(random.choice(lijst))
+
         print('Nu is het de tijd om de code te raden.\n')
-        print(test(['F', 'B', 'B', 'E']))
+        print(test(antwoord))
         break
 
-    elif wie == 'computer' or wie == 'Computer':
-        while True:
+    elif wie == 'computer' or wie == 'Computer': # Computer speelt
+
+        while True: # Bepaald tegen welk algoritme je speelt
             mode = input('Wil je de gamemode zetten op easy, medium of hard?: ')
             if mode == 'easy' or mode == 'medium' or mode == 'hard':
                 break
@@ -176,7 +179,7 @@ while True:
             for j in lijst:
                 for u in lijst:
                     for g in lijst:
-                        alles.append([i, j, u, g])
+                        alles.append([i, j, u, g]) # Maakt een lijst met alle mogelijke combinaties
 
         print('Tijd om jouw code te maken.\nGeef een code van vier cijfers, je hebt de keuze uit: A, B, C, D, E, F.')
 

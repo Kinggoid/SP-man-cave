@@ -1,6 +1,6 @@
 def fibonaci(een, twee, n):
     antwoord = een + twee
-    if n == 0 or n == 1:
+    if n <= 1:
         return 0
     elif n == 2:
         return antwoord
