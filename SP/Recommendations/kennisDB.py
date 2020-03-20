@@ -63,7 +63,7 @@ def content(product, cursor, categorie):
         for i in range(1, 5):
             recommendations.append((p[-i])[0]) # Pakt de meest gekochte producten
     else:
-        recommendaties = categorien(product, categorie[0][0], categorie[0][1]) # Kijkt welke producten in dezelfde
+        recommendaties = categorien(product, categorie[0][0], categorie[0][1], cursor) # Kijkt welke producten in dezelfde
         # subcategorie maar niet in dezelfde subsubcategorie zitten
 
         if (len(recommendations) + len(eenlijst)) >= 4: # Als er te veel recommendaties zijn
@@ -240,7 +240,7 @@ def anderen(cursor, product):
     return aantal # Returned een lijst met product.id's en hoe vaak deze voorkomen
 
 
-def categorien(product, cate, subcate):
+def categorien(product, cate, subcate, cursor):
     """Deze functie kijkt welke producten in dezelfde subcategorie vallen maar niet in dezelfde subsubcategorie zitten"""
     lst = []
     categorie = """select id, subcategory, subsubcategory from products"""
@@ -283,32 +283,47 @@ def extrarecom(recommendations, cursor, product):
         recommendations.append(record[waar + i])
 
 
-database = mysql.connector.connect(
-    host = "localhost",
-    user = "root",
-    passwd = "Kinggoid2001!",
-    database = "kennisDB"
-)
-
-cursor = database.cursor()
-gebruiker = ('5a393d68ed295900010384ca', ) # Een voorbeeld van een profiel.id
-product = (45281, ) # Een voorbeeld van een product.id
-
-category = """select subcategory, subsubcategory from products where id = (%s)"""
-cursor.execute(category, product)
-categorie = cursor.fetchall()
-
-
 def begin():
     """Zoals de naam doet vermoeden begint hier het hele proces"""
+    database = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        passwd='Voer hier je wachtwoord in',
+        database="Voer hier je database in"
+    )
+
+    cursor = database.cursor()
+
     while 1:
         welke = input('Wil je de collaborative of de content recommendations?: ')
-        if welke != collaborative or welke != content:
-            continue
-        else:
-            if welke == 'collaborative':
-                print(collaborative(gebruiker, cursor, product))
-                break
-            else:
-                print(content(product, cursor, categorie))
-                break
+        if welke == collaborative or welke == content:
+            if welke == 'collaborative' or welke == 'content':
+                if welke == 'collaborative': # Filtert collaborative
+                    gebruikers = """select id from profielen"""
+                    cursor.execute(gebruikers)
+                    allegebruikers = cursor.fetchall()
+
+                    for gebruiker in allegebruikers: # Voor alle gebruikers
+                        recommend = collaborative(gebruiker, cursor, product)
+                        inzetten = """insert into collaborative (product_id, product_1, product_2, product_3, product_4) values (%s, %s, %s, %s, %s)"""
+                        values = (gebruiker[0], recommend[0], recommend[1], recommend[2], recommend[3])
+                        cursor.execute(inzetten, values)
+                        database.commit()
+                        break
+                else:
+                    products = """select id from products"""
+                    cursor.execute(products)
+                    alleproducts = cursor.fetchall()
+
+                    for product in alleproducts: # Voor alle producten
+                        category = """select subcategory, subsubcategory from products where id = (%s)"""
+                        cursor.execute(category, product)
+                        categorie = cursor.fetchall()
+
+                        recommend = content(product, cursor, categorie)
+
+                        inzetten = """insert into content (product_id, product_1, product_2, product_3, product_4) values (%s, %s, %s, %s, %s)"""
+                        values = (product[0], recommend[0], recommend[1], recommend[2], recommend[3])
+                        cursor.execute(inzetten, values)
+                        database.commit()
+                        break
