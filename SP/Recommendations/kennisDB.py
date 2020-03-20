@@ -22,6 +22,16 @@ def collaborative(gebruiker, cursor, product):
         if i not in eenvanelke:
             eenvanelke.append(i) # We stoppen één van elk product in 'eenvanelke'
 
+    GP = gebprod(cursor, gebruiker)
+    LGP = []
+
+    for i in GP:
+        LGP.append(i[0])
+
+    for i in eenvanelke: # Hier haal ik alle producten weg die de gebruiker al gekocht heeft
+        if i in LGP:
+            eenvanelke.remove(i)
+
     recommendations = []
     if len(eenvanelke) >= 4: # Als we al genoeg materiaal hebben voor recommendations
         hoeveelelke = []
