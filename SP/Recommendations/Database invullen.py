@@ -502,9 +502,5 @@ def bekeken():
     print("Finished creating the target database contents.")
 
 
-def alles():
-    pass
-
-alles()
 
 
